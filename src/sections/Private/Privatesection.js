@@ -1,4 +1,4 @@
-import React, {useState} from 'react'
+import React, {useState, useContext} from 'react'
 import Textinput from '../../components/Textinput'
 import { Location } from "react-router-dom";
 import Modals from '../../components/Modal'
@@ -7,6 +7,8 @@ import {Request, requestAuth} from '../../components/axios'
 import { useSignIn } from 'react-auth-kit'
 //import { useNavigate } from "react-router-dom";
 import axios, { AxiosError } from 'axios'
+import Selsect from '../../components/Selsect';
+
 function Privatesection() {
     const [success, setSuccess] = useState(false)
     const [fail, setFail] = useState(false)
@@ -45,6 +47,8 @@ function Privatesection() {
     //    setInputs((prev) => ({...prev, [e.target.name]:e.target.value}))
     // }
     const handleSubmit = async (e) =>{
+     console.log(gender)
+     console.log(education)   
     e.preventDefault()
     const response = await Request.post('eligibility/customer_rating.php',{
     "email": "degozi@gmail.com",
@@ -94,6 +98,7 @@ function Privatesection() {
         setFail(true) 
      }
     }
+
   return (
     <div className='w-full md:px-10 px-6 mx-auto mt-6'>
         <Modals show={success} handleClose={handleContinue} type="success" />
@@ -111,7 +116,8 @@ function Privatesection() {
         <p>If you have all these, please proceed to check your eligibility below</p>
 
         <div className='w-full mt-12'>
-            <form onSubmit={handleSubmit}>
+            {/* i changed the form tag to the div tag since the form is automatically submitting by itself and gave the continue button the handleSubmit function */}
+            <div>
             <div>
                 <label className='font-bold mb-3'>Employer’s Name</label>
                 <input 
@@ -133,7 +139,6 @@ function Privatesection() {
                      onChange={(e) =>  setIncome(e.target.value)}
                       />
                 </div>
-
             </div>
             <div  className='mt-10'>
                 {/* <h3  className='font-bold mb-2'>Do you have an existing loan?</h3>
@@ -142,7 +147,6 @@ function Privatesection() {
                 <div className='md:w-2/5'>
                     <label className='font-bold mb-3'>Number of dependant</label>
                     <input 
-            
                     className="w-full h-16  mt-3 rounded px-4"
                     placeholder='Enter of dependant' 
                     name='dependant'
@@ -150,11 +154,8 @@ function Privatesection() {
                 </div>
                 <div className='md:w-2/5'>
                     <label className='font-bold mb-3'>Level of education</label>
-                    <input 
-                    name = ''
-                     className="w-full h-16  mt-3 rounded px-4" 
-                     placeholder='Select your existing loan tenor'
-                     onChange={(e)=> setEducation(e.target.value)} />
+                    <Selsect options={['Primary', 'Secondary', 'Tetiary']} placeholder='Level of Education'
+                      onSelect={(val) => setEducation(val)} />
                 </div>
                 </div>
                
@@ -175,13 +176,10 @@ function Privatesection() {
                 </div>
                 <div className='md:w-2/5'>
                     <label className='font-bold mb-3'>Gender</label>
-                    <input  className="w-full h-16  mt-3 rounded px-4" 
-                    placeholder='Select your gender'
-                     onChange={(e) =>   setGender(e.target.value)}/>
+                    <Selsect options={['Male', 'Female']} placeholder='Gender'
+                      onSelect={(val) => setGender(val)} />
                 </div>
                 </div>
-               
-
             </div>
                 <div  className='mt-10'>
                 {/* <h3  className='font-bold mb-2'>Do you have an existing loan?</h3>
@@ -213,11 +211,11 @@ function Privatesection() {
                 </div>
 
             </div>
-            <button type='submit' className="mx-auto block w-full py-4 mt-12 text-lg font-bold md:py-8 text-white rounded-lg bg-orange-500">
+            <button type='submit' className="mx-auto block w-full py-4 mt-12 text-lg font-bold md:py-8 text-white rounded-lg bg-orange-500" onClick={handleSubmit}>
           {" "}
           Continue{" "}
         </button>
-</form>
+    </div>
         </div>
     </div>
   )
