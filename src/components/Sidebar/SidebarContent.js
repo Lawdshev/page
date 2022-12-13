@@ -12,9 +12,14 @@ function Icon({ icon, ...props }) {
 }
 
 function SidebarContent() {
+
+  const routeToHomePage = () => {
+    window.location.replace('/')
+  }
+
   return (
     <div className="py-4 text-gray-500">
-      <a className="ml-6 text-lg font-bold text-gray-800" href="#">
+      <a className="ml-6 text-lg font-bold text-gray-800" onClick={routeToHomePage}>
         <img src={Logo} className='mx-auto' style={{width:"160px", height:"auto"}} />
       </a>
       <ul className="mt-6">
