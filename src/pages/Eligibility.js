@@ -6,6 +6,8 @@ import Typeahead from "../components/Typeahed";
 import Privatesection from "../sections/Private/Privatesection";
 import Publicsection from "../sections/Public/Publicsection";
 
+
+
 function Eligibility() {
   const { selSector, toggleSector } = useContext(SectorContext)
   const [show, setShow] = useState(false);

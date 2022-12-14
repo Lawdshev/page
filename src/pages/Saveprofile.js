@@ -12,7 +12,6 @@ function Saveprofile() {
     if(nextPage === 0) {
       setNext((prev) => prev + 1)
     }
-    
   }
 
   const handleContinue = () => {

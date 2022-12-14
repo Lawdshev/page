@@ -78,11 +78,14 @@ function Loandetails() {
           />
         </div>
         <div className="block md:w-5/12 w-full">
+          
           <label className="block font-medium">Education</label>
           <Typeahed
             onInputChange={(val) => console.log(val)}
             placeholder="Highest level of education"
+            options={[{ name: "Primary" }, { name: "Secondary" },{name: "Tertiary"}]}
           />
+          
         </div>
         <div className="block md:w-5/12 w-full">
           <label className="block font-medium">
