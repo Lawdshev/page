@@ -10,6 +10,7 @@ const ForgotPassword = lazy(() => import('./pages/ForgotPassword'))
 const CreateAccount = lazy(() => import('./pages/CreateAccount'))
 const Saveprofile = lazy(() => import('./pages/Saveprofile'))
 const Application = lazy(() => import('./pages/Applicationsuccess'))
+const UpdateProfile = lazy(() => import ('./pages/UpdateProfile'))
 
 function App() {
   return (
@@ -22,6 +23,7 @@ function App() {
           <Route path="/create-account" component={CreateAccount} />
           <Route path="/forgot-password" component={ForgotPassword} />
           <Route path="/application-success" component={Application} />
+          <Route path="/updateprofile" component={UpdateProfile} />
           
         
           {/* Place new routes over this */}

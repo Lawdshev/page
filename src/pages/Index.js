@@ -153,14 +153,8 @@ function Index() {
           className="md:w-3/5 mx-auto mt-8"
           data-accordion="collapse"
         >  
-            {/* created a FAQDropDown Components inside Component Folder and a FAQs.js file containing all the FAQ and Answers inside Utils Folder */}
-            {
-              FAQs.map(faq => {
-                return <div className="mb-3">
-                        <FAQDropDown answer={faq.ans} question={faq.question}/>
-                      </div> 
-              })
-            }   
+        {/* created a FAQDropDown Components inside Component Folder */}
+        <FAQDropDown/> 
         </div>
         <div className="w-4/5 border-b mx-auto my-12" />
         <div className="md:w-3/5 mx-auto" style={{color:"#59595D"}}>
