@@ -5,24 +5,24 @@ import Modals from '../../components/Modal'
 import Typeahed from '../../components/Typeahed'
 import {Request, requestAuth} from '../../components/axios'
 import { useSignIn } from 'react-auth-kit'
-//import { useNavigate } from "react-router-dom";
 import axios, { AxiosError } from 'axios'
 import Selsect from '../../components/Selsect';
+import {privateSecValidation} from '../../validation/privSectionValidation'
+
 
 function Privatesection() {
     const [success, setSuccess] = useState(false)
     const [fail, setFail] = useState(false)
-   // const [show, setType] = useState('')
- const [email, setEmail] = useState('')
- const [dob, setDob] = useState('')
- const [tenure, setTenure] = useState('')
- const [gender, setGender] = useState('')
- const [dependents, setDependents] = useState('')
- const [education, setEducation] = useState('')
- const [income, setIncome] = useState('')
- const [employername, setEmployername] = useState('')
- const [error, setError] = useState('')
- const signIn = useSignIn()
+    const [email, setEmail] = useState('')
+    const [dob, setDob] = useState('')
+    const [tenure, setTenure] = useState('')
+    const [gender, setGender] = useState('')
+    const [dependents, setDependents] = useState('')
+    const [education, setEducation] = useState('')
+    const [income, setIncome] = useState('')
+    const [employername, setEmployername] = useState('')
+    const [error, setError] = useState('')
+    const signIn = useSignIn()
 
     const handleContinue = (e) => {
     //setSuccess(false)
@@ -34,25 +34,52 @@ function Privatesection() {
     
     const handleSubmit = async (e) =>{
         e.preventDefault()
-        axios.post('https://pagefinancials.com/webapp/eligibility/customer_rating.php',{
-            email,
-            dob,
-            gender,
-            dependents,
-            education,
-            tenure,
-            income,
-            employername
-        }).then(res=>{
-            if (res.data.message === "Not Eligibile") {
-                //setModal not eligible
-                setFail('true')
-                return 
+        let form = {
+            email: email,
+            dob: dob,
+            gender: gender,
+            dependents: dependents,
+            education: education,
+            tenure: tenure,
+            income:income,
+            employername:employername
             }
-            axios.post("https://pagefinancials.com/webapp/users/create.php",
-            {email}).then(setSuccess('true'))
-        }).catch(error=> console.log(error))
+        let valid = await privateSecValidation(form)
+        console.log(valid)
+        if (valid === false) {
+            return
+        }
+       
+        try {
+            axios.post('http://localhost:8080/https://pagefinancials.com/webapp/eligibility/customer_rating.php',form).then(res=>{
+                if (res.data.message === "Eligible") {
+                    axios.get("https://pagefinancials.com/webapp/users/read_one.php", {email}).then(res => {
+                        if(email === res.data.email){
+                            return
+                        }
+                    })
+                    axios.post("http://localhost:8080/https://pagefinancials.com/webapp/users/create.php",{email})
+                    setSuccess(true)
+                    setFail(false) 
+                } else {
+                    if(!res.data.status ||  res.data.message === "Not Eligibile" ){
+                        setSuccess(false)
+                        setFail(true) 
+                        return
+                     }
+                }
+            }).catch(error=>{
+                if(error && error instanceof AxiosError && error.response.data.message ===  "Not Eligibile" )
+                setSuccess(false)
+                setFail(true)
+                if(error && error instanceof Error)
+                console.log(error.message);
+            })
+        } catch (error) {
+            console.log(error)
+        }   
     }
+    
     
   return (
     <div className='w-full md:px-10 px-6 mx-auto mt-6'>
@@ -109,6 +136,7 @@ function Privatesection() {
                     onChange={(e) =>  setDependents(e.target.value)} />                    
                 </div>
                 <div className='md:w-2/5'>
+                <label className='font-bold mb-3'>Level of Education</label>
                 <Selsect
                         placeholder="Level of Education"
                         options={["Primary", "Secondary","Tertiary"]}

@@ -15,6 +15,7 @@ const response = await Request.post('https://pagefinancials.com/webapp/eligibili
     setError(error.message);
   })  
    console.log(response)
+   
   if(response.data.status &&  response.data.message === "Eligibile"){
    setSuccess(true)
    setFail(false) 

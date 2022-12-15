@@ -13,6 +13,19 @@ import { states } from "../utils/selectData";
 function Loandetails() {
   const [next, setNext] = useState("");
   const [meanOfID, setMeansOfID] = useState("");
+  const [surname, setsurname] = useState('');
+  const [firstname, setFirstname] = useState('')
+  const [middlename, setMiddlename] = useState('')
+  const [mobile, setMobile] = useState('')
+  const [dependents, setDependents] = useState('')
+  const [maritalstatus, setMaritalstatus] = useState('')
+  const [residencestate, setResidencestate] = useState('')
+  const [education, setEducation] = useState('')
+  const [referral, setReferral] = useState('')
+  const [lga, setLga] = useState('')
+  const [residentialaddress, setResidentialaddress] = useState('')
+  const [idtype, setIdtype] = useState('');
+  const [idnumber, setIdnumber] = useState('')
 
   return (
     <div className="w-full py-10 px-4">
@@ -140,10 +153,10 @@ function Loandetails() {
           ))}
         <div className="block md:w-5/12 w-full">
           <label className="block font-medium">Upload Government ID</label>
-          <FileUpload placeholder="Upload government ID" />
         </div>
         <div className=" md:w-5/12 w-full flex items-center gap-4">
           <div className="h-2 w-4/5 mt-3  rounded bg-gray-400  ">
+            <FileUpload placeholder="Upload government ID" />
             <div className="" />
           </div>
           <span className="mt-3">0%</span>

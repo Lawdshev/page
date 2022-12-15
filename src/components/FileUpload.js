@@ -17,6 +17,8 @@ const convertToBase64 = (file) => {
 function FileUpload({placeholder=""}) {
   const inputRef = useRef();
   const [file, setFile] = useState(null);
+  
+
   return (
       <div className="relative mb-3">
         <img

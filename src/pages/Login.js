@@ -1,29 +1,29 @@
 import React,{useState} from 'react'
-import { Link } from 'react-router-dom'
 import Cookies from 'js-cookie'
-
-import ImageLight from '../assets/img/login-office.jpeg'
-import ImageDark from '../assets/img/login-office-dark.jpeg'
-import { GithubIcon, TwitterIcon } from '../icons'
-import { Label, Input, Button } from '@windmill/react-ui'
-//added by rasheedah
 import FAQdropdown from '../components/FAQdropdown'
 import FAQs from "../utils/FAQs";
-import axios from 'axios'
+import axios from 'axios';
+import { loginValidation } from '../validation/loginValidation';
 
 function Login() {
   const [email,setEmail] = useState()
   const [password,setPassword] = useState()
 
-  const handleContinue = () => {
-    //validation here
+  const handleContinue = async() => {
+    //validation
+    let form = {
+        email:email,
+        password:password
+    }
+    let valid = await loginValidation(form)
+    if (valid === false) {
+      return
+    }
     try {
-      axios.post('https://pagefinancials.com/webapp/users/login.php',{
-        email,
-        password
-      }).then(res=> {
+      axios.post('http://localhost:8080/https://pagefinancials.com/webapp/users/login.php',form).then(res=> {
         if (!res.data.access_token){
           console.log('no access')
+          //invalid login parameters
           return
         }
         Cookies.set('access',res.data.access_token)
