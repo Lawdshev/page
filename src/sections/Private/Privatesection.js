@@ -35,7 +35,7 @@ const [fail, setFail] = useState(false)
     const handleSubmit = async (e) =>{
         e.preventDefault()
         try {
-            axios.post('http://localhost:8080/https://pagefinancials.com/webapp/eligibility/customer_rating.php',{
+            axios.post('https://pagefinancials.com/webapp/eligibility/customer_rating.php',{
             email,
             dob,
             gender,
@@ -46,7 +46,7 @@ const [fail, setFail] = useState(false)
             employername
             }).then(res=>{
                 if (res.data.message === "Eligible") {
-                    axios.post("http://localhost:8080/https://pagefinancials.com/webapp/users/create.php", { email })
+                    axios.post("https://pagefinancials.com/webapp/users/create.php", { email })
                     setSuccess(true)
                     setFail(false) 
                 } else {
