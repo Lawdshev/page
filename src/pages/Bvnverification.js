@@ -6,40 +6,54 @@ import CheckedIcon from "../assets/img/checked.svg";
 import UncheckedIcon from "../assets/img/unchecked.svg";
 import { Request, requestAuth } from "../components/axios";
 import axios from "axios";
+import Cookies from "js-cookie";
+
+let accessToken = Cookies.get('access')
 
 function Bvnverification() {
-  const { selSector, toggleSector,government } = useContext(SectorContext)
+  const { selSector, toggleSector, government } = useContext(SectorContext)
   const [checkbox1, setCheckbox1] = useState(false);
   const [checkbox2, setCheckbox2] = useState(false);
-  const [next, setNext] = useState("");
+  const [next, setNext] = useState(false);
   const [show, setShow] = useState(false)
   const [bvn, setBvn] = useState('')
   const [otp, setOtp] = useState('')
   const [empty, setEmpty] = useState('')
-  const handleClose = () => setShow(false)
-  const handleSubmit = async (e) =>{
-  //e.preventDefault();
-  if(bvn === ''){
-   return setEmpty('Bvn can not be empty')
-  }
-  const response = await requestAuth.post('verification/bvn_verify.php',{
-    number:bvn
-  }).catch((error)=>{
-  })
- if(response.status === 200){
-   setNext("next")
-}
-  
- }
-   const handleOkSubmit= async (e)=>{
-   if(otp === ''){
-   return setEmpty('Field can not be empty')
-  }
-  const makeRequest =  await requestAuth.post("verification/verify_otp.php",{
-    otp: otp
-  })
 
-}
+  // added error for unchecked terms and condition as well as privacy policy on line 124
+  const [noCheck, setNoCheck] = useState('')
+
+
+  const handleClose = () => setShow(false)
+
+
+  const handleSubmit = async (e) =>{
+    // e.preventDefault();
+    if(bvn === ''){
+    return setEmpty('Bvn can not be empty')
+    }
+    if (!checkbox1 || !checkbox2) {
+      //accept terms and condition
+      setNoCheck('Privacy,Terms and Conditions must be accepted')
+      return
+    }
+    axios.post('https://pagefinancials.com/webapp/verification/bvn_verify.php',{number:bvn},{ headers: {"Authorization" :`Bearer ${accessToken}`}}).then(res=>{
+      if (res.status === 200) {
+        setNext(true)
+      }
+    })
+    setNext(true)
+ }
+ 
+   const handleOkSubmit= async (e)=>{
+    window.location.replace("/app/personaldetails")
+    // setShow(true)
+    if(otp === ''){
+    return setEmpty('Field can not be empty')
+    }
+    await axios.post("https://pagefinancials.com/webapp/verification/verify_otp.php",{otp},{ headers: {"Authorization" :`Bearer ${accessToken}`}}).then()
+    
+    }
 
   return (
     <div className="w-full py-10 px-4">
@@ -65,7 +79,7 @@ function Bvnverification() {
             <label className="block">Oracle Number</label>
             <input
               className="w-4/5 md:h-16 h-10 mt-3 rounded px-4"
-              placeholder="#      Enter bank verification number "
+              placeholder="#     Enter bank verification number "
             />
           </div>
         )}
@@ -87,7 +101,7 @@ function Bvnverification() {
           <input
             type="checkbox"
             className="focus:bg-orange-500 bg-orange-500"
-            onChange={(e) => setCheckbox2(e.target.checked)}
+            onChange={() => setCheckbox1(true)}
           />{" "}
           <h4>
             {" "}
@@ -100,28 +114,28 @@ function Bvnverification() {
             required= 'true'
             type="checkbox"
             className="focus:bg-orange-500 bg-orange-500"
-            onChange={(e) => setCheckbox2(e.target.checked)}
+            onChange={() => setCheckbox2(true)}
           />{" "}
           <h4>
             {" "}
             I accept all <span className="text-orange-500">Privacy Policy</span>
           </h4>
         </label>
-
+          <span  className="text-orange-500 mb-2">{noCheck}</span> 
         <p className="text-sm">
           I have read, understood and accept all the terms and conditions &
           privacy policy for Page International Financial Services Limited.
         </p>
 
-        <button onClick={() => handleSubmit()} className="mx-auto block w-full py-4 mt-12 text-lg font-bold md:py-8 text-white rounded-lg bg-orange-500">
+        <a onClick={() => handleSubmit()} href="#otp" className="mx-auto text-center block w-full py-4 mt-12 text-lg font-bold md:py-8 text-white rounded-lg bg-orange-500 cursor-pointer">
           {" "}
           Next{" "}
-        </button>
+        </a>
       </div>
       )}
 
-      {next === "next" &&(
-        <div className="md:ml-12 py-6 md:w-2/5">
+      {next &&(
+        <div className="md:ml-12 py-6 md:w-2/5" id="otp">
         <div>
           <form>
           <label>OTP</label>
@@ -140,7 +154,7 @@ function Bvnverification() {
 
         <h3>Didn’t get an OTP? <button className="text-blue-600 mt-8">Click here</button>  </h3>
 
-        <button onClick={() =>setShow(true)} className="mx-auto block w-full py-4 mt-12 text-lg font-bold md:py-8 text-white rounded-lg bg-orange-500">
+        <button onClick={handleOkSubmit} className="mx-auto block w-full py-4 mt-12 text-lg font-bold md:py-8 text-white rounded-lg bg-orange-500">
           {" "}
           Continue{""}
         </button>

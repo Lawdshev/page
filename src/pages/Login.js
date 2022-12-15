@@ -1,79 +1,99 @@
-import React from 'react'
-import { Link } from 'react-router-dom'
-
-import ImageLight from '../assets/img/login-office.jpeg'
-import ImageDark from '../assets/img/login-office-dark.jpeg'
-import { GithubIcon, TwitterIcon } from '../icons'
-import { Label, Input, Button } from '@windmill/react-ui'
+import React, {useState} from 'react';
+import FAQDropDown from "../components/FAQDropDown";
+import FAQs from "../utils/FAQs";
+import Cookies from 'js-cookie';
+import axios from 'axios'
 
 function Login() {
+  const [email,setEmail] = useState()
+  const [password,setPassword] = useState()
+
+  const handleContinue = () => {
+    //validation here
+    try {
+      axios.post('https://pagefinancials.com/webapp/users/login.php',{
+        email,
+        password
+      }).then(res=> {
+        if (!res.data.access_token){
+          console.log('no access')
+          return
+        }
+        Cookies.set('access',res.data.access_token)
+      })
+    } catch (error) {
+      console.log(error)
+    }  
+  }
+
   return (
-    <div className="flex items-center min-h-screen p-6 bg-gray-50 dark:bg-gray-900">
-      <div className="flex-1 h-full max-w-4xl mx-auto overflow-hidden bg-white rounded-lg shadow-xl dark:bg-gray-800">
-        <div className="flex flex-col overflow-y-auto md:flex-row">
-          <div className="h-32 md:h-auto md:w-1/2">
-            <img
-              aria-hidden="true"
-              className="object-cover w-full h-full dark:hidden"
-              src={ImageLight}
-              alt="Office"
-            />
-            <img
-              aria-hidden="true"
-              className="hidden object-cover w-full h-full dark:block"
-              src={ImageDark}
-              alt="Office"
-            />
-          </div>
-          <main className="flex items-center justify-center p-6 sm:p-12 md:w-1/2">
-            <div className="w-full">
-              <h1 className="mb-4 text-xl font-semibold text-gray-700 dark:text-gray-200">Login</h1>
-              <Label>
-                <span>Email</span>
-                <Input className="mt-1" type="email" placeholder="john@doe.com" />
-              </Label>
+    <>
+    <div className="border-b w-4/5 mx-auto mb-10" />
+    <div className="mx-auto md:w-2/5">
+      <div>
+        <label>Personal Email Address</label>
+        <input
+          className="w-full md:h-16 h-10 mt-3 rounded px-4"
+          placeholder="Enter registered email address"
+          value={email}
+          onChange={(e)=>setEmail(e.target.value)}
+        />
+      </div>
+      <div className="md:mt-10 mt-6">
+        <label>Password</label>
+        <input
+          className="w-full md:h-16 h-10 mt-3 rounded px-4"
+          placeholder="Enter password"
+          value={password}
+          onChange={(e)=>setPassword(e.target.value)}
+        />
+      </div>
+      <button
+        className="mx-auto block w-full py-4 mt-12 text-lg font-bold md:py-8 text-white rounded-lg bg-orange-500" onClick={handleContinue}
+      >
+        {" "}
+        continue{" "}
+      </button>
+    </div>
+    <div
+        className="w-full px-5 md:px-12 mx-auto py-3 md:py-10 bg-white"
+        style={{ backgroundColor: "white" }}
+      >
+        <h3
+          className="text-center text-2xl font-bold"
+          style={{ color: "#59595D" }}
+        >
+          Frequently Asked Questions
+        </h3>
 
-              <Label className="mt-4">
-                <span>Password</span>
-                <Input className="mt-1" type="password" placeholder="***************" />
-              </Label>
-
-              <Button className="mt-4" block tag={Link} to="/app">
-                Log in
-              </Button>
-
-              <hr className="my-8" />
-
-              <Button block layout="outline">
-                <GithubIcon className="w-4 h-4 mr-2" aria-hidden="true" />
-                Github
-              </Button>
-              <Button className="mt-4" block layout="outline">
-                <TwitterIcon className="w-4 h-4 mr-2" aria-hidden="true" />
-                Twitter
-              </Button>
-
-              <p className="mt-4">
-                <Link
-                  className="text-sm font-medium text-purple-600 dark:text-purple-400 hover:underline"
-                  to="/forgot-password"
-                >
-                  Forgot your password?
-                </Link>
-              </p>
-              <p className="mt-1">
-                <Link
-                  className="text-sm font-medium text-purple-600 dark:text-purple-400 hover:underline"
-                  to="/create-account"
-                >
-                  Create account
-                </Link>
-              </p>
-            </div>
-          </main>
+        <div
+          id="accordion-collapse"
+          className="md:w-3/5 mx-auto mt-8"
+          data-accordion="collapse"
+        >  
+            {/* created a FAQDropDown Components inside Component Folder and a FAQs.js file containing all the FAQ and Answers inside Utils Folder */}
+            {
+              FAQs.map(faq => {
+                return <div className="mb-3">
+                        <FAQDropDown key={faq.ans} answer={faq.ans} question={faq.question}/>
+                      </div> 
+              })
+            }   
+        </div>
+        <div className="w-4/5 border-b mx-auto my-12" />
+        <div className="md:w-3/5 mx-auto" style={{color:"#59595D"}}>
+          <h3 className="font-semibold">Representative example: </h3>
+          <p className="text-sm">
+            Representative example: Loan amount of ₦3,500,000 borrowed for 12
+            months. Monthly Interest Rate: - 2.99%. No other fees. <br/><br/>Minimum and
+            maximum loan term: 3 – 12 months.<br/><br/> 
+          </p>
+          <h3 className="font-semibold">Contact Details: </h3>
+          <p  className="text-sm"> Phone: 017007243. Email: customer@pagefinancials.com</p>
+          
         </div>
       </div>
-    </div>
+  </>
   )
 }
 

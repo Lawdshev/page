@@ -1,18 +1,22 @@
 import React, { useState, useRef } from "react";
 import Upload from "../assets/img/upload.svg";
 
-const convertToBase64 = (file) => {
-  return new Promise((resolve, reject) => {
-    const fileReader = new FileReader();
-    fileReader.readAsDataURL(file);
-    fileReader.onload = () => {
-      resolve(fileReader.result);
-    };
-    fileReader.onerror = (error) => {
-      reject(error);
-    };
-  });
-};
+// const convertToBase64 = (file) => {
+//   return new Promise((resolve, reject) => {
+//     const fileReader = new FileReader();
+//     fileReader.readAsDataURL(file);
+//     fileReader.onload = () => {
+//       resolve(fileReader.result);
+//     };
+//     fileReader.onerror = (error) => {
+//       reject(error);
+//     };
+//   });
+// };
+
+const uploadFile = ({target: {files}}) => {
+      console.log(files[0])
+}
 
 function FileUpload({placeholder=""}) {
   const inputRef = useRef();
@@ -39,6 +43,7 @@ function FileUpload({placeholder=""}) {
           ref={inputRef}
           type="file"
           className="w-full hidden h-16  mt-3 rounded pr-16 px-4"
+          onChange={uploadFile}
         />
       </div>
   );

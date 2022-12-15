@@ -4,7 +4,6 @@ import Arrowdown from "../assets/img/arrowdown.svg";
 function FAQDropDown({ answer , question}) {
     const [show , setShow] = useState(false)
 
-
   return (
       <>
         <h2 id="accordion-collapse-heading-1">

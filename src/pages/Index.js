@@ -135,35 +135,6 @@ function Index() {
               </div>
             </>
           )}
-
-          {nextPage === 1 && (
-            <>
-              <div className="border-b w-4/5 mx-auto mb-10" />
-              <div className="mx-auto md:w-2/5">
-                <div>
-                  <label>Personal Email Address</label>
-                  <input
-                    className="w-full md:h-16 h-10 mt-3 rounded px-4"
-                    placeholder="Enter registered email address"
-                  />
-                </div>
-                <div className="md:mt-10 mt-6">
-                  <label>Password</label>
-                  <input
-                    className="w-full md:h-16 h-10 mt-3 rounded px-4"
-                    placeholder="Enter password"
-                  />
-                </div>
-                <button
-                  onClick={() => handleContinue()}
-                  className="mx-auto block w-full py-4 mt-12 text-lg font-bold md:py-8 text-white rounded-lg bg-orange-500"
-                >
-                  {" "}
-                  continue{" "}
-                </button>
-              </div>
-            </>
-          )}
         </div>
       </div>
       <div

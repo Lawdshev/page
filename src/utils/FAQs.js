@@ -5,7 +5,7 @@ const FAQs = [
     },
     {
         question: 'How much can I borrow?',
-        ans : 'ANS: Minimum Loan amount is N200,000, Maximum loan amount is N5,000,000'
+        ans : 'ANS: Minimum Loan amount is N200,000,\nMaximum loan amount is N5,000,000'
     },
     {
         question: 'How long does it take?',
@@ -17,7 +17,7 @@ const FAQs = [
     },
     {
         question: 'What documents are required?',
-        ans : `ANS: BVN 6 months’ statement of account Government issued ID Card Official Email address Work ID card. \n Employment/promotion letter`
+        ans : `ANS: BVN 6 months’ statement of account Government issued ID Card Official Email address Work ID card.\n Employment/promotion letter`
     },
 ]
 
