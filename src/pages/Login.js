@@ -33,24 +33,27 @@ function Login() {
     }
     let valid = await loginValidation(form)
     if (valid === false) {
-      setError('invalid login')
+      setError('All fields must be filled correctly')
       return
     }
     try {
-      axios.post('http://localhost:8080/https://pagefinancials.com/webapp/users/login.php',form).then(res=> {
-        if (res.data.message === "Update your Password") {
-          // this will open the modal with the message "upadate your profile"
+      setError('')
+      axios.post('https://pagefinancials.com/webapp/users/login.php',form).then(res=> {
+
+      if (res.data.status === false && res.data.message === "Update your Password") {
+          //  "upadate your profile"
            setUpdate(true)
-      
-          //invalid login parameters
           return
         }
-        if (res.data.message === "No Record Found"||"Password mismatch" ) {
-           // show invalid user message   
-           setInvalid(true)
-            
-        } 
-        Cookies.set('access', res.data.access_token)
+        if (res.data.status === false && res.data.message === "No Record Found") {
+            //invalid login parameters 
+            setInvalid(true)
+            return
+        }
+        if (res.data.status === true) {
+           Cookies.set('access', res.data.access_token)
+           window.location.replace('/app/eligibility')
+        }      
       })
     } catch (error) {
       console.log(error)
@@ -90,7 +93,7 @@ function Login() {
         />
       </div>
       { error !== '' &&
-        <span className='text-red-500 text-sm'>{error}</span> 
+        <span className='text-red-500 text-lg'>{error}</span> 
       }
       <button
         className="mx-auto block w-full py-4 mt-12 text-lg font-bold md:py-8 text-white rounded-lg bg-orange-500" onClick={handleContinue}
