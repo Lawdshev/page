@@ -41,7 +41,7 @@ function Personaldetails () {
 
   //function to save personal details to the back end
   const handleSave = async (e) => {
-         e.preventDefault()
+         e.preventDefault();
 
          await axios.post('https://pagefinancials.com/webapp/customers/personal_detail.php', {
           title,
@@ -70,7 +70,7 @@ function Personaldetails () {
           }
          })
   }
-  
+
   return (
     <div className="w-full py-10 px-4">
       <div className="border-b w-full md:w-4/5 mx-auto mt-16" />

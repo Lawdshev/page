@@ -8,9 +8,10 @@ import { useSignIn } from 'react-auth-kit'
 //import { useNavigate } from "react-router-dom";
 import axios, { AxiosError } from 'axios'
 import Selsect from '../../components/Selsect';
-import {privateSecValidation} from '../../validation/privateSectionValidation'
+import {privateSecValidation} from '../../validation/privateSectionValidation';
 
 function Privatesection() {
+    const [error, setError] = useState('');
     const [success, setSuccess] = useState(false)
     const [fail, setFail] = useState(false)
     const [email, setEmail] = useState('')
@@ -21,7 +22,6 @@ function Privatesection() {
     const [education, setEducation] = useState('')
     const [income, setIncome] = useState('')
     const [employername, setEmployername] = useState('')
-    const [error, setError] = useState('');
     const [password, setPassword] = useState('')
     const signIn = useSignIn()
 
@@ -49,10 +49,12 @@ function Privatesection() {
         let valid = await privateSecValidation(form)
         console.log(valid)
         if (valid === false) {
+            setError('All Fields must be filled correctly')
             return
         } 
         try 
         {
+         setError('')   
         //   check eligibility with form data  
           axios.post('https://pagefinancials.com/webapp/eligibility/customer_rating.php', form).then(res => {
                     //  checking if eligibility is true
@@ -65,7 +67,6 @@ function Privatesection() {
                     // then creation of user with the eligible email    
                     axios.post("https://pagefinancials.com/webapp/users/create.php",{email}).then(res => {
                         if (res.data.status === true || res.data.message === "Customer was created."){
-                        
                         // send the default password to the user to enable the user to update profile    
                         console.log(res.data.default_password)
                         }
@@ -216,8 +217,10 @@ function Privatesection() {
                     placeholder='Enter your email address'
                      onChange={(e) =>  setEmail(e.target.value)} />
                 </div>
-
             </div>
+            { error !== '' &&
+              <span className='text-red-500 text-lg'>{error}</span> 
+           }
             <button type='submit' className="mx-auto block w-full py-4 mt-12 text-lg font-bold md:py-8 text-white rounded-lg bg-orange-500" onClick={handleSubmit}>
           {" "}
           Continue{" "}
