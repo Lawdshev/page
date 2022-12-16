@@ -5,22 +5,44 @@ import Cookies from 'js-cookie';
 import axios from 'axios';
 import { Link } from 'react-router-dom';
 import Logo from "../assets/img/logo.svg";
+import {loginValidation} from '../validation/loginValidation';
+import UpdateModal from '../components/UpdateModal';
 
 function Login() {
   const [email,setEmail] = useState()
   const [password,setPassword] = useState()
+  const [update, setUpdate] = useState(false)
+  const [invalid, setInvalid] = useState(false)
 
-  const handleContinue = () => {
-    //validation here
+  const handleInvalid = () => {
+    setInvalid(false)
+  }
+
+  const handleClose = () => {
+    window.location.replace('/updateprofile')
+  }
+
+  const handleContinue = async() => {
+    //validation
+    let form = {
+        email:email,
+        password:password
+    }
+    let valid = await loginValidation(form)
+    if (valid === false) {
+      return
+    }
     try {
-      axios.post('https://pagefinancials.com/webapp/users/login.php',{
-        email,
-        password
-      }).then(res=> {
-        if (!res.data.access_token){
-          console.log('no access')
+      axios.post('http://localhost:8080/https://pagefinancials.com/webapp/users/login.php',form).then(res=> {
+        if (res.data.message === "Update your Password") {
+           setUpdate(true)
+          console.log(`no access, ${res.data.message}`) || console.log('please update account to continue')
+          //invalid login parameters
           return
         }
+        if (res.data.message === "No Record Found"||"Password mismatch" ) {
+            //  show invalid login parameter message
+        } 
         Cookies.set('access',res.data.access_token)
       })
     } catch (error) {
@@ -30,6 +52,11 @@ function Login() {
 
   return (
     <>
+    {/* //modal to show if account has not been update */}
+    <UpdateModal show={update} handleClose={handleClose} type='update'/>
+
+    {/* modal to show if login details is incorrect */}
+    <UpdateModal show={invalid} handleClose={handleInvalid} type='invalid'/> 
     <div className='md:px-12 mx-auto py-3 px-3 md:py-10'>
         <img src={Logo} style={{ width: "160px", height: "auto" }} />
     </div>
