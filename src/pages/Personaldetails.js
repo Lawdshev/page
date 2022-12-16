@@ -40,7 +40,9 @@ function Personaldetails () {
   const [loanpurpose, setloanpurpose] = useState('')
 
   //function to save personal details to the back end
-  const handleSave = async () => {
+  const handleSave = async (e) => {
+         e.preventDefault()
+
          await axios.post('https://pagefinancials.com/webapp/customers/personal_detail.php', {
           title,
           surname,
@@ -68,117 +70,7 @@ function Personaldetails () {
           }
          })
   }
-   
-   
-
-  // [
-  //   {
-  //     "key": "IPassport",
-  //     "type": "file",
-  //     "src": "/C:/xampp/htdocs/Laravel_Projects/ecommerce/public/upload/admin_images/2021102110022021092710011710328341890742.jpg"
-  //   },
-  //   {
-  //     "key": "title",
-  //     "value": "Mr",
-  //     "type": "text"
-  //   },
-  //   {
-  //     "key": "surname",
-  //     "value": "Ikeaba",
-  //     "type": "text"
-  //   },
-  //   {
-  //     "key": "firstname",
-  //     "value": "Ngozi",
-  //     "type": "text"
-  //   },
-  //   {
-  //     "key": "middlename",
-  //     "value": "Ifunanya",
-  //     "type": "text"
-  //   },
-  //   {
-  //     "key": "mobile",
-  //     "value": "08141131223",
-  //     "type": "text"
-  //   },
-  //   {
-  //     "key": "dependents",
-  //     "value": "4",
-  //     "type": "text"
-  //   },
-  //   {
-  //     "key": "maritalstatus",
-  //     "value": "Single",
-  //     "type": "text"
-  //   },
-  //   {
-  //     "key": "residencestate",
-  //     "value": "Lagos",
-  //     "type": "text"
-  //   },
-  //   {
-  //     "key": "education",
-  //     "value": "Tertiary",
-  //     "type": "text"
-  //   },
-  //   {
-  //     "key": "referral",
-  //     "value": "67890",
-  //     "type": "text"
-  //   },
-  //   {
-  //     "key": "lga",
-  //     "value": "Mushin",
-  //     "type": "text"
-  //   },
-  //   {
-  //     "key": "residentialaddress",
-  //     "value": "57, Palm Avenue",
-  //     "type": "text"
-  //   },
-  //   {
-  //     "key": "idtype",
-  //     "value": "NIN",
-  //     "type": "text"
-  //   },
-  //   {
-  //     "key": "idnumber",
-  //     "value": "12345678",
-  //     "type": "text"
-  //   },
-  //   {
-  //     "key": "issuedate",
-  //     "value": "1995-06-23",
-  //     "type": "text"
-  //   },
-  //   {
-  //     "key": "expdate",
-  //     "value": "1995-06-23",
-  //     "type": "text"
-  //   },
-  //   {
-  //     "key": "nextofkin",
-  //     "value": "Mary",
-  //     "type": "text"
-  //   },
-  //   {
-  //     "key": "nextofkinphone",
-  //     "value": "08051453523",
-  //     "type": "text"
-  //   },
-  //   {
-  //     "key": "nextofkinrelationship",
-  //     "value": "Mother",
-  //     "type": "text"
-  //   },
-  //   {
-  //     "key": "loanpurpose",
-  //     "value": "Rent",
-  //     "type": "text"
-  //   }
-  // ]
-
+  
   return (
     <div className="w-full py-10 px-4">
       <div className="border-b w-full md:w-4/5 mx-auto mt-16" />

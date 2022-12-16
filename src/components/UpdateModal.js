@@ -11,15 +11,15 @@ function UpdateModal({show, handleClose, type}) {
      
      <Backdrop > 
 
-     <div className='w-full h-full relative' onClick={handleClose} />
+     <div className='w-full h-full relative f' onClick={handleClose} />
      <div className='absolute h-auto w-2/4 py-12 px-8 rounded-lg bg-white'>
       {  
         type === 'update'?
        <>
-        <div className='w-full mx-auto px-8'>
+        <div className='w-full  flex flex-col mx-auto px-8'>
             <img src={Sad} alt="image" className='block mx-auto w-24 h-24 mb-6' />
 
-            <p className='mb-3' style={{color:"#464646"}}>Please Update Password to continue</p>
+            <p className='mb-3 self-center' style={{color:"#464646"}}>Please Update Password to continue</p>
             <br/>
         </div>
 
@@ -27,10 +27,10 @@ function UpdateModal({show, handleClose, type}) {
        
        </> : 
           <>
-          <div className='w-full mx-auto px-8'>
+          <div className='w-full mx-auto  flex flex-col px-8'>
               <img src={Sad} alt="image" className='block mx-auto w-24 h-24 mb-6' />
   
-              <p className='mb-3' style={{color:"#464646"}}>Invalid Login Parameters</p>
+              <p className='mb-3 self-center'  style={{color:"#464646"}}>User not found please check your email and password and try again</p>
               <br/>
           </div>
   
