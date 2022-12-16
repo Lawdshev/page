@@ -40,19 +40,27 @@ function Bvnverification() {
     axios.post('https://pagefinancials.com/webapp/verification/bvn_verify.php',{number:bvn},{ headers: {"Authorization" :`Bearer ${accessToken}`}}).then(res=>{
       if (res.status === 200) {
         setNext(true)
+      }{
+        console.log(res.data.message)
       }
     })
-    setNext(true)
  }
  
    const handleOkSubmit= async (e)=>{
-    window.location.replace("/app/personaldetails")
     // setShow(true)
     if(otp === ''){
     return setEmpty('Field can not be empty')
     }
-    await axios.post("https://pagefinancials.com/webapp/verification/verify_otp.php",{otp},{ headers: {"Authorization" :`Bearer ${accessToken}`}}).then()
-    
+    await axios.post("https://pagefinancials.com/webapp/verification/verify_otp.php",{otp},{ headers: {"Authorization" :`Bearer ${accessToken}`}}).then(res => {
+        if(res.data.status === true ){
+          console.log('otp has been verified sucessfully')
+          window.location.replace("/app/personaldetails")
+        } {
+          console.log(res.data.message)
+        }
+    })
+    //navigate to personal details page 
+      
     }
 
   return (
@@ -62,7 +70,7 @@ function Bvnverification() {
       <div className="h-10 px-3 py-2 ml-4 bg-orange-500 md:w-1/6 text-white font-bold">
         BVN Verification
       </div>
-      {next !== "next" &&(
+      {next !== 'next' &&(
         <div className="md:ml-12 py-6 md:w-3/5">
         {selSector === "Public Sector" && government !== "State Government" &&(
             <div>
@@ -111,7 +119,7 @@ function Bvnverification() {
         </label>
         <label className="flex items-center gap-4 my-6">
           <input
-            required= 'true'
+            required
             type="checkbox"
             className="focus:bg-orange-500 bg-orange-500"
             onChange={() => setCheckbox2(true)}

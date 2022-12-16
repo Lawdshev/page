@@ -8,65 +8,95 @@ import { useSignIn } from 'react-auth-kit'
 //import { useNavigate } from "react-router-dom";
 import axios, { AxiosError } from 'axios'
 import Selsect from '../../components/Selsect';
+import {privateSecValidation} from '../../validation/privateSectionValidation'
 
 function Privatesection() {
-const [success, setSuccess] = useState(false)
-const [fail, setFail] = useState(false)
-   // const [show, setType] = useState('')
- const [email, setEmail] = useState('')
- const [dob, setDob] = useState('')
- const [tenure, setTenure] = useState('')
- const [gender, setGender] = useState('')
- const [dependents, setDependents] = useState('')
- const [education, setEducation] = useState('')
- const [income, setIncome] = useState('')
- const [employername, setEmployername] = useState('')
- const [error, setError] = useState('')
- const signIn = useSignIn()
+    const [success, setSuccess] = useState(false)
+    const [fail, setFail] = useState(false)
+    const [email, setEmail] = useState('')
+    const [dob, setDob] = useState('')
+    const [tenure, setTenure] = useState('')
+    const [gender, setGender] = useState('')
+    const [dependents, setDependents] = useState('')
+    const [education, setEducation] = useState('')
+    const [income, setIncome] = useState('')
+    const [employername, setEmployername] = useState('')
+    const [error, setError] = useState('');
+    const [password, setPassword] = useState('')
+    const signIn = useSignIn()
 
     const handleContinue = (e) => {
     //setSuccess(false)
      window.location.replace("/app/bvnverification");
     }
      const handleFail = () => {
-        setFail(false)
+        setFail(false);
+        window.location.replace("/app/eligibility");
     }
     
-    const handleSubmit = async (e) =>{
+    const handleSubmit = async (e) => {
         e.preventDefault()
-        try {
-            axios.post('https://pagefinancials.com/webapp/eligibility/customer_rating.php',{
-            email,
-            dob,
-            gender,
-            dependents,
-            education,
-            tenure,
-            income,
-            employername
-            }).then(res=>{
-                if (res.data.message === "Eligible") {
-                    axios.post("https://pagefinancials.com/webapp/users/create.php", { email })
-                    setSuccess(true)
-                    setFail(false) 
-                } else {
-                    if(!res.data.status ||  res.data.message === "Not Eligibile" ){
-                        setSuccess(false)
-                        setFail(true) 
-                        return
-                     }
-                }
-            }).catch(error=>{
-                if(error && error instanceof AxiosError && error.response.data.message ===  "Not Eligibile" )
-                setSuccess(false)
-                setFail(true)
-                if(error && error instanceof Error)
-                console.log(error.message);
-            })
-        } catch (error) {
-            console.log(error)
-        }   
+        let form = {
+            email: email,
+            dob: dob,
+            gender: gender,
+            dependents: dependents,
+            education: education,
+            tenure: tenure,
+            income:income,
+            employername:employername
+            }
+        let valid = await privateSecValidation(form)
+        console.log(valid)
+        if (valid === false) {
+            return
+        } 
+        try 
+        {
+        //   check eligibility with form data  
+          axios.post('https://pagefinancials.com/webapp/eligibility/customer_rating.php', form).then(res => {
+                    //  checking if eligibility is true
+                    if (res.data.message === "Eligible") {
+
+                        // this to open the modal showing you are eligible for the loan
+                        setSuccess(true);
+                        setFail(false);
+
+                    // then creation of user with the eligible email    
+                    axios.post("https://pagefinancials.com/webapp/users/create.php",{email}).then(res => {
+                        if (res.data.status === true || res.data.message === "Customer was created."){
+                        
+                        // send the default password to the user to enable the user to update profile    
+                        console.log(res.data.default_password)
+                        }
+                        {
+                        //  this would send the message if the user isn't created    
+                        console.log(res.data.message)
+                        }
+                        })
+                   } 
+                        //  check if user is not eligible
+                        if(!res.data.status ||  res.data.message === "Not Eligibile" ){
+
+                            // set modal with message ineligible
+                            setSuccess(false)
+                            setFail(true) 
+                            return
+                        }
+                }).catch(error=>{
+                            if(error && error instanceof AxiosError && error.response.data.message ===  "Not Eligibile" )
+                            setSuccess(false)
+                            setFail(true)
+                            if(error && error instanceof Error)
+                            console.log(error.message);
+                })
+            }
+            catch (error) {
+                console.log(error)
+                }   
     }
+    
+    
     
   return (
     <div className='w-full md:px-10 px-6 mx-auto mt-6'>
@@ -172,7 +202,7 @@ const [fail, setFail] = useState(false)
                     <label className='font-bold mb-3'>Loan tenor</label>
                     <Selsect
                         placeholder="Tenure"
-                        options={["1", "2", "3", "4", "5", "7", "8", "9", "10", "11", "12"]}
+                        options={["1", "2", "3", "4", "5",]}
                         onSelect={(val)=> setTenure(val)}
                     />
                 </div>
@@ -192,8 +222,8 @@ const [fail, setFail] = useState(false)
           {" "}
           Continue{" "}
         </button>
-</div>
-        </div>
+      </div>
+    </div>
     </div>
   )
 }

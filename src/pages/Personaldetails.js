@@ -8,11 +8,176 @@ import Typeahed from "../components/Typeahed";
 import Textinput from "../components/Textinput";
 import FileUpload from "../components/FileUpload";
 import { states } from "../utils/selectData";
+import Selsect from '../components/Selsect'
+import axios from "axios";
+import Cookies from "js-cookie";
 
 
-function Loandetails() {
+let accessToken = Cookies.get('access')
+
+function Personaldetails () {
   const [next, setNext] = useState("");
-  const [meanOfID, setMeansOfID] = useState("");
+  const [file, setFile] = useState('')
+  const [title, setTitle] = useState('')
+  const [surname, setsurname] = useState('');
+  const [firstname, setFirstname] = useState('')
+  const [middlename, setMiddlename] = useState('')
+  const [mobile, setMobile] = useState('')
+  const [dependents, setDependents] = useState('')
+  const [maritalstatus, setMaritalstatus] = useState('')
+  const [residencestate, setResidencestate] = useState('')
+  const [education, setEducation] = useState('')
+  const [referral, setReferral] = useState('')
+  const [lga, setLga] = useState('')
+  const [residentialaddress, setResidentialaddress] = useState('')
+  const [idtype, setIdtype] = useState('');
+  const [idnumber, setIdnumber] = useState('')
+  const [issuedate, setIssuedate] = useState(null)
+  const [expdate, setExpdate] = useState(null)
+  const [nextofkin, setNextofkin] = useState('')
+  const [nextofkinphone, setNextofkinphone] = useState('')
+  const [nextofkinrelationship, setNextofkinrelationship] = useState('')
+  const [loanpurpose, setloanpurpose] = useState('')
+
+  //function to save personal details to the back end
+  const handleSave = async () => {
+         await axios.post('https://pagefinancials.com/webapp/customers/personal_detail.php', {
+          title,
+          surname,
+          firstname,
+          middlename,
+          dependents,
+          mobile,
+          maritalstatus,
+          residencestate,
+          education,
+          referral,
+          lga,
+          residentialaddress,
+          idtype,
+          idnumber,
+          issuedate,
+          expdate,
+          nextofkin,
+          nextofkinphone,
+          nextofkinrelationship,
+          loanpurpose
+         }, {headers : { "Authorization" :`Bearer ${accessToken}`}}).then(res => {
+          if(res.status === 200) {
+            console.log('sucessfully updated personal details')
+          }
+         })
+  }
+   
+   
+
+  // [
+  //   {
+  //     "key": "IPassport",
+  //     "type": "file",
+  //     "src": "/C:/xampp/htdocs/Laravel_Projects/ecommerce/public/upload/admin_images/2021102110022021092710011710328341890742.jpg"
+  //   },
+  //   {
+  //     "key": "title",
+  //     "value": "Mr",
+  //     "type": "text"
+  //   },
+  //   {
+  //     "key": "surname",
+  //     "value": "Ikeaba",
+  //     "type": "text"
+  //   },
+  //   {
+  //     "key": "firstname",
+  //     "value": "Ngozi",
+  //     "type": "text"
+  //   },
+  //   {
+  //     "key": "middlename",
+  //     "value": "Ifunanya",
+  //     "type": "text"
+  //   },
+  //   {
+  //     "key": "mobile",
+  //     "value": "08141131223",
+  //     "type": "text"
+  //   },
+  //   {
+  //     "key": "dependents",
+  //     "value": "4",
+  //     "type": "text"
+  //   },
+  //   {
+  //     "key": "maritalstatus",
+  //     "value": "Single",
+  //     "type": "text"
+  //   },
+  //   {
+  //     "key": "residencestate",
+  //     "value": "Lagos",
+  //     "type": "text"
+  //   },
+  //   {
+  //     "key": "education",
+  //     "value": "Tertiary",
+  //     "type": "text"
+  //   },
+  //   {
+  //     "key": "referral",
+  //     "value": "67890",
+  //     "type": "text"
+  //   },
+  //   {
+  //     "key": "lga",
+  //     "value": "Mushin",
+  //     "type": "text"
+  //   },
+  //   {
+  //     "key": "residentialaddress",
+  //     "value": "57, Palm Avenue",
+  //     "type": "text"
+  //   },
+  //   {
+  //     "key": "idtype",
+  //     "value": "NIN",
+  //     "type": "text"
+  //   },
+  //   {
+  //     "key": "idnumber",
+  //     "value": "12345678",
+  //     "type": "text"
+  //   },
+  //   {
+  //     "key": "issuedate",
+  //     "value": "1995-06-23",
+  //     "type": "text"
+  //   },
+  //   {
+  //     "key": "expdate",
+  //     "value": "1995-06-23",
+  //     "type": "text"
+  //   },
+  //   {
+  //     "key": "nextofkin",
+  //     "value": "Mary",
+  //     "type": "text"
+  //   },
+  //   {
+  //     "key": "nextofkinphone",
+  //     "value": "08051453523",
+  //     "type": "text"
+  //   },
+  //   {
+  //     "key": "nextofkinrelationship",
+  //     "value": "Mother",
+  //     "type": "text"
+  //   },
+  //   {
+  //     "key": "loanpurpose",
+  //     "value": "Rent",
+  //     "type": "text"
+  //   }
+  // ]
 
   return (
     <div className="w-full py-10 px-4">
@@ -35,54 +200,70 @@ function Loandetails() {
 
         <div className="block md:w-5/12 w-full">
           <label className="block font-medium">Title</label>
-          <Typeahed
-            onInputChange={(val) => console.log(val)}
+          <Selsect
+            onSelect={(val) => setTitle(val)}
             placeholder="Select Title"
-            options={[{ name: "Mr" }, { name: "Mrs" }, { name: "Miss" }]}
+            options={['Mr', 'Mrs', 'Miss']}
           />
         </div>
         <div className="block md:w-5/12 w-full">
           <label className="block font-medium">Surname</label>
-          <Textinput placeholder="Enter Surname" />
+          <Textinput placeholder="Enter Surname" 
+           value={surname}
+           onInputChange={(val) => setsurname(val)}/>
         </div>
         <div className="block md:w-5/12 w-full">
           <label className="block font-medium">First Name</label>
-          <Textinput placeholder="Enter first name" />
+          <Textinput placeholder="Enter first name" 
+           value={firstname}
+           onInputChange={(val) => setFirstname(val)} />
         </div>
         <div className="block md:w-5/12 w-full">
           <label className="block font-medium">Middle Name</label>
-          <Textinput placeholder="Enter middle name" />
+          <Textinput placeholder="Enter middle name" 
+          value={middlename}
+          onInputChange={(val) => setMiddlename(val)}/>
         </div>
         <div className="block md:w-5/12 w-full">
           <label className="block font-medium">Phone Number</label>
-          <Textinput placeholder="Enter phone number" />
+          <Textinput placeholder="Enter phone number" 
+          value={mobile}
+          onInputChange={(val) => setMobile(val)}/>
         </div>
         <div className="block md:w-5/12 w-full">
           <label className="block font-medium">No. of Dependents</label>
-          <Textinput placeholder="No. of dependents" />
+          <Textinput placeholder="No. of dependents" 
+          value={dependents}
+          onInputChange={(val) => setDependents(val)}/>
         </div>
         <div className="block md:w-5/12 w-full">
           <label className="block font-medium">Marital Status</label>
-          <Typeahed
-            onInputChange={(val) => console.log(val)}
+          <Selsect
+            onSelect={(val) => setMaritalstatus(val)}
             placeholder="Select marital status"
-            options={[{ name: "married" }, { name: "single" }]}
+            options={['Single', 'Married', 'Divorced']}
           />
         </div>
         <div className="block md:w-5/12 w-full">
           <label className="block font-medium">State of Residence</label>
           <Typeahed
-            onInputChange={(val) => console.log(val)}
+            onInputChange={(val) => setResidencestate(val)}
             placeholder="Select state of residence"
             options={states}
           />
         </div>
         <div className="block md:w-5/12 w-full">
+          <label className="block font-medium">Local Government of Residence</label>
+          <Textinput placeholder="Enter Surname" 
+           value={lga}
+           onInputChange={(val) => setLga(val)}/>
+        </div>
+        <div className="block md:w-5/12 w-full">
           <label className="block font-medium">Education</label>
-          <Typeahed
-            onInputChange={(val) => console.log(val)}
-            placeholder="Highest level of education"
-            options={[{ name: "Primary" }, { name: "Secondary" }, { name: "Tetiary" }]}
+          <Selsect
+            onSelect={(val) => setEducation(val)}
+            placeholder="Select level of education"
+            options={['Primary', 'Secondary', 'Tetiary']}
           />
         </div>
         <div className="block md:w-5/12 w-full">
@@ -105,40 +286,53 @@ function Loandetails() {
           <textarea
             placeholder="Enter residential address"
             className="w-full px-3 py-3 mt-3 rounded"
+            value={residentialaddress}
+            onChange={(e) => setResidentialaddress(e.target.value)}
           />
         </div>
         <div className="block md:w-5/12 w-full">
+          <label className="block font-medium">Refferal</label>
+          <Textinput placeholder="Enter Surname" 
+           value={referral}
+           onInputChange={(val) => setReferral(val)}/>
+        </div>
+        <div className="block md:w-5/12 w-full">
           <label className="block font-medium">Means of Identification </label>
-          <Typeahed
-            onInputChange={(val) => setMeansOfID(val)}
-            placeholder="Select means of identification"
-            options={[
-              { name: "international passport" },
-              { name: "drivers license" },
-              { name: "nation ID" },
-            ]}
+          <Selsect
+            onSelect={(val) => setIdtype(val)}
+            placeholder="Select marital status"
+            options={['International passport', "Driver's lincense", "National ID card"]}
           />
         </div>
         <div className="block md:w-5/12 w-full">
           <label className="block font-medium">ID Number</label>
-          <Textinput placeholder="Enter ID number" />
+          <Textinput placeholder="Enter ID number"
+          value={idnumber}
+          onInputChange={(val) => setIdnumber(val)} />
         </div>
-        {meanOfID === "international passport" ||
-          (meanOfID === "drivers license" && (
+    
+        {idtype === "international passport" ||
+          (idtype === "drivers license" && (
             <>
               <div className="block md:w-5/12 w-full">
                 <label className="block font-medium">Issuance Date</label>
-                <Textinput placeholder="Enter issuance date" type="date" />
+                <Textinput placeholder="Enter issuance date" type="date" 
+                value={issuedate}
+                onInputChange={(val) => setIssuedate(val)}/>
               </div>
               <div className="block md:w-5/12 w-full">
                 <label className="block font-medium">Issuance Date</label>
-                <Textinput placeholder="Expiry Date" type="date" />
+                <Textinput placeholder="Expiry Date" type="date" 
+                value={expdate}
+                onInputChange={(val) => setExpdate(val)}/>
               </div>
             </>
           ))}
         <div className="block md:w-5/12 w-full">
           <label className="block font-medium">Upload Government ID</label>
-          <FileUpload placeholder="Upload government ID" />
+          <FileUpload placeholder="Upload government ID" 
+          value={file}
+          onInputChange={(val) => setFile(val)}/>
         </div>
         <div className=" md:w-5/12 w-full flex items-center gap-4">
           <div className="h-2 w-4/5 mt-3  rounded bg-gray-400  ">
@@ -148,33 +342,38 @@ function Loandetails() {
         </div>
         <div className="block md:w-5/12 w-full">
           <label className="block font-medium">Next of Kin Full Name</label>
-          <Textinput placeholder="Enter your next of Kin Full Name" type="text" />
+          <Textinput placeholder="Enter your next of Kin Full Name" type="text" 
+           value={nextofkin}
+           onInputChange={(val) => setNextofkin(val)}/>
         </div>
         <div className="block md:w-5/12 w-full">
           <label className="block font-medium">Relationship</label>
           <Typeahed
-            onInputChange={(val) => setMeansOfID(val)}
+            onInputChange={(val) => setNextofkinrelationship(val)}
             placeholder="Select relationship"
             options={[
-              { name: "international passport" },
-              { name: "drivers license" },
-              { name: "nation ID" },
+              { name: "Mother" },
+              { name: "Father" },
+              { name: "Spouse" },
+              { name: "Sibling" },
             ]}
           />
         </div>
         <div className="block md:w-5/12 w-full">
           <label className="block font-medium">Phone Number</label>
-          <Textinput placeholder="Enter next of kin phone number" type="text" />
+          <Textinput placeholder="Enter next of kin phone number" type="text" 
+           value={nextofkinphone}
+           onInputChange={(val) => setNextofkinphone(val)}/>
         </div>
         <div className="block md:w-5/12 w-full">
           <label className="block font-medium">Purpose For The Loan</label>
           <Typeahed
-            onInputChange={(val) => setMeansOfID(val)}
+            onInputChange={(val) => setloanpurpose(val)}
             placeholder="Select purpose for the loan"
             options={[
-              { name: "international passport" },
-              { name: "drivers license" },
-              { name: "nation ID" },
+              { name: "Rent" },
+              { name: "Business" },
+              { name: "Others" },
             ]}
           />
         </div>
@@ -183,7 +382,7 @@ function Loandetails() {
         <button disabled className="md:h-20 md:w-64 text-white font-semibold bg-gray-400 rounded">
           Previous
         </button>
-        <button className="md:h-20 md:w-64 text-white font-semibold bg-orange-500 rounded">
+        <button className="md:h-20 md:w-64 text-white font-semibold bg-orange-500 rounded" onClick={handleSave}>
           Save & Continue
         </button>
       </div>
@@ -191,4 +390,4 @@ function Loandetails() {
   );
 }
 
-export default Loandetails;
+export default  Personaldetails;

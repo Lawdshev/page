@@ -2,23 +2,47 @@ import React, {useState} from 'react';
 import FAQDropDown from "../components/FAQDropDown";
 import FAQs from "../utils/FAQs";
 import Cookies from 'js-cookie';
-import axios from 'axios'
+import axios from 'axios';
+import { Link } from 'react-router-dom';
+import Logo from "../assets/img/logo.svg";
+import {loginValidation} from '../validation/loginValidation';
+import UpdateModal from '../components/UpdateModal';
 
 function Login() {
   const [email,setEmail] = useState()
   const [password,setPassword] = useState()
+  const [update, setUpdate] = useState(false)
+  const [invalid, setInvalid] = useState(false)
 
-  const handleContinue = () => {
-    //validation here
+  const handleInvalid = () => {
+    setInvalid(false)
+  }
+
+  const handleClose = () => {
+    window.location.replace('/updateprofile')
+  }
+
+  const handleContinue = async() => {
+    //validation
+    let form = {
+        email:email,
+        password:password
+    }
+    let valid = await loginValidation(form)
+    if (valid === false) {
+      return
+    }
     try {
-      axios.post('https://pagefinancials.com/webapp/users/login.php',{
-        email,
-        password
-      }).then(res=> {
-        if (!res.data.access_token){
-          console.log('no access')
+      axios.post('http://localhost:8080/https://pagefinancials.com/webapp/users/login.php',form).then(res=> {
+        if (res.data.message === "Update your Password") {
+           setUpdate(true)
+          console.log(`no access, ${res.data.message}`) || console.log('please update account to continue')
+          //invalid login parameters
           return
         }
+        if (res.data.message === "No Record Found"||"Password mismatch" ) {
+            //  show invalid login parameter message
+        } 
         Cookies.set('access',res.data.access_token)
       })
     } catch (error) {
@@ -28,6 +52,14 @@ function Login() {
 
   return (
     <>
+    {/* //modal to show if account has not been update */}
+    <UpdateModal show={update} handleClose={handleClose} type='update'/>
+
+    {/* modal to show if login details is incorrect */}
+    <UpdateModal show={invalid} handleClose={handleInvalid} type='invalid'/> 
+    <div className='md:px-12 mx-auto py-3 px-3 md:py-10'>
+        <img src={Logo} style={{ width: "160px", height: "auto" }} />
+    </div>
     <div className="border-b w-4/5 mx-auto mb-10" />
     <div className="mx-auto md:w-2/5">
       <div>
@@ -55,6 +87,9 @@ function Login() {
         continue{" "}
       </button>
     </div>
+    <div className='text-center mt-2 underline text-orange-500'>
+    <Link to='/updateprofile'>Click here to update password</Link>
+    </div>
     <div
         className="w-full px-5 md:px-12 mx-auto py-3 md:py-10 bg-white"
         style={{ backgroundColor: "white" }}
@@ -71,14 +106,8 @@ function Login() {
           className="md:w-3/5 mx-auto mt-8"
           data-accordion="collapse"
         >  
-            {/* created a FAQDropDown Components inside Component Folder and a FAQs.js file containing all the FAQ and Answers inside Utils Folder */}
-            {
-              FAQs.map(faq => {
-                return <div className="mb-3">
-                        <FAQDropDown key={faq.ans} answer={faq.ans} question={faq.question}/>
-                      </div> 
-              })
-            }   
+       {/* created a FAQDropDown Components inside Component Folder and a FAQs.js file containing all the FAQ and Answers inside Utils Folder */} 
+        <FAQDropDown/>       
         </div>
         <div className="w-4/5 border-b mx-auto my-12" />
         <div className="md:w-3/5 mx-auto" style={{color:"#59595D"}}>
