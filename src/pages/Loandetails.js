@@ -2,7 +2,7 @@ import React, { useState } from "react";
 import Arrowdown from "../assets/img/arrowdown.svg";
 // import CheckedIcon from "../assets/img/checked.svg";
 // import UncheckedIcon from "../assets/img/unchecked.svg";
-import Naira from "../assets/img/naira.svg"
+import Naira from "../assets/img/naira.svg";
 
 function Loandetails() {
   const [checkbox1, setCheckbox1] = useState(false);

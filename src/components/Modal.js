@@ -48,10 +48,8 @@ function Modals({ handleClose, show, child, type="failed" }) {
 
         <button className='w-2/3 block mx-auto py-4 rounded-lg text-white text-lg font-semibold bg-orange-500' onClick={() => handleClose()}>continue</button>
        </>}
-        
        
      </div>
-     
      </Backdrop>
      
      }
