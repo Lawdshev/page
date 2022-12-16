@@ -4,6 +4,7 @@ import Cookies from 'js-cookie';
 import axios from 'axios';
 import { Link } from 'react-router-dom';
 import Logo from "../assets/img/logo.svg";
+import LoginModals from "../components/LoginModal";
 
 
 
@@ -12,6 +13,24 @@ function UpdateProfile() {
     const [old_password, setOld_password] = useState('')
     const [new_password, setNew_password] = useState('')
     const [confirm_password, setConfirm_password] = useState('');
+
+    // state to check if update is successful
+    const [successful, setSuccessful] = useState(false);
+
+    //state to check if update fails
+    const [fail, setFail] = useState(false)
+
+    // function to navigate to login page once account has been updated sucessfully
+   const loginPage = () => {
+    window.location.replace('/login')
+ }
+
+ //function to close modal if update is not sucessful
+ const handleClose = () => {
+    setFail(false)
+ }
+
+
 
     const handleContinue = () => {
       try {
@@ -23,9 +42,11 @@ function UpdateProfile() {
          }).then(res => {
             if(res.data.status === true || res.data.message === "Customer Account was updated." ){
               // set a message saying you can login now
+              setSuccessful(true)
               console.log('please login to continue')
             } {
               // send the message 
+              setFail(true)
               console.log(res.data.message)
             }
          })
@@ -36,15 +57,18 @@ function UpdateProfile() {
 
     }
 
-    // function to navigate to login once account has been updated sucessfully
-   const loginPage = () => {
-      window.location.replace('/login')
-   }
+    
 
 
 
   return (
     <>
+    {/* modal to show if update is successful */}
+    <LoginModals show={successful} handleClose={loginPage} type='successful' />
+
+    {/* modal to show if update fails  */}
+    <LoginModals show={fail} handleClose={handleClose} type='fail' />
+
     <div className="md:px-12 mx-auto py-3 px-3 md:py-10">
         <img src={Logo} style={{ width: "160px", height: "auto" }} />
     </div>

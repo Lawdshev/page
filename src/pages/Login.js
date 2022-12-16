@@ -9,10 +9,13 @@ import {loginValidation} from '../validation/loginValidation';
 import UpdateModal from '../components/UpdateModal';
 
 function Login() {
-  const [email,setEmail] = useState()
-  const [password,setPassword] = useState()
-  const [update, setUpdate] = useState(false)
-  const [invalid, setInvalid] = useState(false)
+  const [email,setEmail] = useState();
+  const [password,setPassword] = useState();
+  const [update, setUpdate] = useState(false);
+  const [invalid, setInvalid] = useState(false);
+
+  // error if not valid email 
+  const [error, setError] = useState('')
 
   const handleInvalid = () => {
     setInvalid(false)
@@ -30,20 +33,24 @@ function Login() {
     }
     let valid = await loginValidation(form)
     if (valid === false) {
+      setError('invalid login')
       return
     }
     try {
       axios.post('http://localhost:8080/https://pagefinancials.com/webapp/users/login.php',form).then(res=> {
         if (res.data.message === "Update your Password") {
+          // this will open the modal with the message "upadate your profile"
            setUpdate(true)
-          console.log(`no access, ${res.data.message}`) || console.log('please update account to continue')
+      
           //invalid login parameters
           return
         }
         if (res.data.message === "No Record Found"||"Password mismatch" ) {
-            //  show invalid login parameter message
+           // show invalid user message   
+           setInvalid(true)
+            
         } 
-        Cookies.set('access',res.data.access_token)
+        Cookies.set('access', res.data.access_token)
       })
     } catch (error) {
       console.log(error)
@@ -67,6 +74,7 @@ function Login() {
         <input
           className="w-full md:h-16 h-10 mt-3 rounded px-4"
           placeholder="Enter registered email address"
+          type='email'
           value={email}
           onChange={(e)=>setEmail(e.target.value)}
         />
@@ -76,10 +84,14 @@ function Login() {
         <input
           className="w-full md:h-16 h-10 mt-3 rounded px-4"
           placeholder="Enter password"
+          type='text'
           value={password}
           onChange={(e)=>setPassword(e.target.value)}
         />
       </div>
+      { error !== '' &&
+        <span className='text-red-500 text-sm'>{error}</span> 
+      }
       <button
         className="mx-auto block w-full py-4 mt-12 text-lg font-bold md:py-8 text-white rounded-lg bg-orange-500" onClick={handleContinue}
       >
