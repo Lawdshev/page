@@ -4,8 +4,6 @@ import Sad from "../assets/img/sad.svg"
 import Thumb from "../assets/img/thumb-up.svg"
 
 function Modals({ handleClose, show, child, type="failed" }) {
-  
-
     
   return (
     <>

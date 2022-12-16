@@ -13,7 +13,6 @@ const ProtectedRoute = ({children}) => {
            setLoggedIn(true)
            return children
         }
-
      }
 
      useEffect(() => {
