@@ -79,7 +79,7 @@ function Personaldetails () {
           }
          })
   }
-  
+
   return (
     <div className="w-full py-10 px-4">
       <div className="border-b w-full md:w-4/5 mx-auto mt-16" />

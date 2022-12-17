@@ -42,7 +42,7 @@ function Login() {
     }
     try {
       setError('')
-      await axios.post('http://localhost:8080/https://pagefinancials.com/webapp/users/login.php',form).then(res=> {
+      await axios.post('https://pagefinancials.com/webapp/users/login.php',form).then(res=> {
 
         if (res.data.status === true) {
           Cookies.set('auth', res.data.access_token)

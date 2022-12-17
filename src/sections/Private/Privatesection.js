@@ -57,8 +57,9 @@ function Privatesection() {
         try 
         {
             setError('')
+
         //   check eligibility with form data  
-          axios.post('http://localhost:8080/https://pagefinancials.com/webapp/eligibility/customer_rating.php', form).then(res => {
+          axios.post('https://pagefinancials.com/webapp/eligibility/customer_rating.php', form).then(res => {
             
                     //  checking if eligibility is true
                     if (res.data.message === "Eligible") {
@@ -66,7 +67,7 @@ function Privatesection() {
                         setFail(false);
 
                     // then creation of user with the eligible email    
-                    axios.post("http://localhost:8080/https://pagefinancials.com/webapp/users/create.php",{email}).then(res => {
+                    axios.post("https://pagefinancials.com/webapp/users/create.php",{email}).then(res => {
                         if (res.data.status === true ){
                             // send the default password to the user to enable the user to update profile 
                             Cookies.set('access', res.data.access_token)
