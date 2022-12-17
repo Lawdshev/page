@@ -17,7 +17,7 @@ function BvnModal({ handleClose, show, }) {
 
         <div className='w-full mx-auto px-8'>
 
-            <p  className='my-8 text-center' style={{color:"#464646"}}>
+            <p  className='my-8 text-center font-bold' style={{color:"#464646"}}>
             Kindly visit the bank to update your<br/> phone number on your BVN
             </p>
         </div>

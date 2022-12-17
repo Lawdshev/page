@@ -4,13 +4,17 @@ import { Location } from "react-router-dom";
 import Modals from '../../components/Modal'
 import Typeahed from '../../components/Typeahed'
 import {Request, requestAuth} from '../../components/axios'
-import { useSignIn } from 'react-auth-kit'
+// import { useSignIn } from 'react-auth-kit'
 import axios, { AxiosError } from 'axios'
 import Selsect from '../../components/Selsect';
-import {privateSecValidation} from '../../validation/privSectionValidation'
-
+import {privateSecValidation} from '../../validation/privateSectionValidation'
+import { useModalContext } from '../../context/modalContext';
+import Cookies from 'js-cookie'
 
 function Privatesection() {
+    const {handleShow} = useModalContext()
+    const [error, setError] = useState('');
+
     const [success, setSuccess] = useState(false)
     const [fail, setFail] = useState(false)
     const [email, setEmail] = useState('')
@@ -21,18 +25,19 @@ function Privatesection() {
     const [education, setEducation] = useState('')
     const [income, setIncome] = useState('')
     const [employername, setEmployername] = useState('')
-    const [error, setError] = useState('')
-    const signIn = useSignIn()
+    const [password, setPassword] = useState('')
+    // const signIn = useSignIn()
 
     const handleContinue = (e) => {
     //setSuccess(false)
      window.location.replace("/app/bvnverification");
     }
      const handleFail = () => {
-        setFail(false)
+        setFail(false);
+        window.location.replace("/app/eligibility");
     }
     
-    const handleSubmit = async (e) =>{
+    const handleSubmit = async (e) => {
         e.preventDefault()
         let form = {
             email: email,
@@ -45,40 +50,48 @@ function Privatesection() {
             employername:employername
             }
         let valid = await privateSecValidation(form)
-        console.log(valid)
-        if (valid === false) {
+        if (valid === false) { 
+           setError('All field must be filled correctly')
             return
-        }
-       
-        try {
-            axios.post('http://localhost:8080/https://pagefinancials.com/webapp/eligibility/customer_rating.php',form).then(res=>{
-                if (res.data.message === "Eligible") {
-                    axios.get("https://pagefinancials.com/webapp/users/read_one.php", {email}).then(res => {
-                        if(email === res.data.email){
-                            return
+        } 
+        try 
+        {
+            setError('')
+
+        //   check eligibility with form data  
+          axios.post('https://pagefinancials.com/webapp/eligibility/customer_rating.php', form).then(res => {
+            
+                    //  checking if eligibility is true
+                    if (res.data.message === "Eligible") {
+                        setSuccess(true);
+                        setFail(false);
+
+                    // then creation of user with the eligible email    
+                    axios.post("https://pagefinancials.com/webapp/users/create.php",{email}).then(res => {
+                        if (res.data.status === true ){
+                            // send the default password to the user to enable the user to update profile 
+                            Cookies.set('access', res.data.access_token)
+                            handleShow(`DEFAULT PASSWORD: ${res.data.default_password}`,true,'continue','/app/bvnverification')
+                            console.log(res.data.default_password)
                         }
-                    })
-                    axios.post("http://localhost:8080/https://pagefinancials.com/webapp/users/create.php",{email})
-                    setSuccess(true)
-                    setFail(false) 
-                } else {
-                    if(!res.data.status ||  res.data.message === "Not Eligibile" ){
-                        setSuccess(false)
-                        setFail(true) 
-                        return
-                     }
-                }
-            }).catch(error=>{
-                if(error && error instanceof AxiosError && error.response.data.message ===  "Not Eligibile" )
-                setSuccess(false)
-                setFail(true)
-                if(error && error instanceof Error)
-                console.log(error.message);
-            })
-        } catch (error) {
-            console.log(error)
-        }   
+                        {
+                        //  this would send the message if the user isn't created   
+                          handleShow(`${res.data.message}`, false,'Retry','/app/eligibility')
+                          console.log(res.data.message)
+                        }
+                        }).catch(error=> console.log(error))
+                    } 
+
+                }).catch(error=>{
+                            if(error && error instanceof AxiosError && error.response.data.message ===  "Not Eligibile" )
+                            if(error && error instanceof Error)
+                            handleShow(`${error.response.data.message}`, false,'Close','/')
+                           
+                })
+            }
+            catch (error) {console.log(error)}   
     }
+    
     
     
   return (
@@ -199,14 +212,16 @@ function Privatesection() {
                     placeholder='Enter your email address'
                      onChange={(e) =>  setEmail(e.target.value)} />
                 </div>
-
             </div>
+            { error !== '' &&
+              <span className='text-red-500 text-lg'>{error}</span> 
+           }
             <button type='submit' className="mx-auto block w-full py-4 mt-12 text-lg font-bold md:py-8 text-white rounded-lg bg-orange-500" onClick={handleSubmit}>
           {" "}
           Continue{" "}
         </button>
-</div>
-        </div>
+      </div>
+    </div>
     </div>
   )
 }

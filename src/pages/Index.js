@@ -3,8 +3,8 @@ import { Location } from "react-router-dom";
 import Logo from "../assets/img/logo.svg";
 import CheckedIcon from "../assets/img/checked.svg";
 import UncheckedIcon from "../assets/img/unchecked.svg";
-import FAQdropdown from '../components/FAQdropdown'
-import FAQs from "../utils/FAQs"
+import FAQDropDown from "../components/FAQDropDown";
+import FAQs from "../utils/FAQs";
 
 function Index() {
   const [checked, setChecked] = useState("");
@@ -17,11 +17,14 @@ function Index() {
   };
 
   const handleContinue = () => {
+    // Added route to the continue existing loan and continue as an existing customer check-box
     if(checked === "new"){
       window.location.replace("/app/Eligibility");
       return
     }
-    window.location.replace("/login");
+    {
+      window.location.replace("/login");
+    }
   };
 
   return (
@@ -133,10 +136,6 @@ function Index() {
               </div>
             </>
           )}
-
-          {/* {nextPage === 1 && (
-            
-          )} */}
         </div>
       </div>
       <div
@@ -154,14 +153,9 @@ function Index() {
           id="accordion-collapse"
           className="md:w-3/5 mx-auto mt-8"
           data-accordion="collapse"
-        >
-          {
-            FAQs.map(faq=>{
-              return <div className="mb-3 text-gray-500"> 
-              <FAQdropdown question={faq.question} ans={faq.ans}/>
-            </div>
-            })
-          }
+        >  
+        {/* created a FAQDropDown Components inside Component Folder */}
+        <FAQDropDown/> 
         </div>
         {/* footer */}
         <div className="w-4/5 border-b mx-auto my-12" />

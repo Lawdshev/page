@@ -31,10 +31,10 @@ const Statement = lazy(() => import('../pages/Statement'))
  * `routes/sidebar.js`
  */
 const routes = [
-  {
-    path: '/eligibility', // the url
-    component: Eligibility, // view rendered
-  },
+  // {
+  //   path: '/eligibility', // the url
+  //   component: Eligibility, // view rendered
+  // },
   {
     path: '/bvnverification', // the url
     component: Bvnverification, // view rendered
@@ -93,4 +93,4 @@ const routes = [
   },
 ]
 
-export default routes
+export default routes;
