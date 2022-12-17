@@ -51,7 +51,7 @@ function Privatesection() {
             }
         let valid = await privateSecValidation(form)
         if (valid === false) { 
-           setError('All field must be filled correctly
+           setError('All field must be filled correctly')
             return
         } 
         try 
