@@ -41,7 +41,7 @@ function UpdateProfile() {
       }
       let valid = updateProfileValidation(form)
       if(valid === false || new_password !== confirm_password){
-        //modal here
+        setError()
         return
       }
       try {
