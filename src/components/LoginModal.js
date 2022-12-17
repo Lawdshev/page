@@ -32,7 +32,7 @@ function LoginModals({show, handleClose, type}) {
           <div className='w-full mx-auto flex flex-col px-8'>
               <img src={Sad} alt="image" className='block mx-auto w-24 h-24 mb-6' />
   
-              <p className='mb-3 self-center' style={{color:"#464646"}}>Update Failed please try again</p>
+              <p className='mb-3 self-center font-bold' style={{color:"#464646"}}>Update Failed please try again</p>
               <br/>
           </div>
   

@@ -7,7 +7,10 @@ import Header from '../components/Header'
 import Main from '../containers/Main'
 import ThemedSuspense from '../components/ThemedSuspense'
 import { SidebarContext } from '../context/SidebarContext'
+import ProtectedRoute from '../utils/ProtectedRoute/ProtectedRoute'
+// import Eligibility from '../pages/Eligibility'
 
+const Eligibility = lazy(() => import('../pages/Eligibility'))
 const Page404 = lazy(() => import('../pages/404'))
 
 function Layout() {
@@ -32,13 +35,17 @@ function Layout() {
         <Main>
           <Suspense fallback={<ThemedSuspense />}>
             <Switch>
+              <Route
+                    path='/app/eligibility'
+                    component={Eligibility}
+                    />
               {routes.map((route, i) => {
                 return route.component ? (
                   <Route
                     key={i}
                     exact={true}
                     path={`/app${route.path}`}
-                    render={(props) => <route.component {...props} />}
+                    render={(props) => <ProtectedRoute><route.component {...props} /></ProtectedRoute> }
                   />
                 ) : null
               })}

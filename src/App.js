@@ -3,6 +3,7 @@ import { BrowserRouter as Router, Switch, Route, Redirect } from 'react-router-d
 import AccessibleNavigationAnnouncer from './components/AccessibleNavigationAnnouncer';
 import ProtectedRoute from './utils/ProtectedRoute/ProtectedRoute';
 import Bvnverification from './pages/Statement';
+import MessageModal from './components/MessageModal';
 //import Saveprofile from './pages/Saveprofile'
 
 const Layout = lazy(() => import('./containers/Layout'))
@@ -21,6 +22,7 @@ function App() {
     <>
       <Router>
         <AccessibleNavigationAnnouncer />
+        <MessageModal/>
         <Switch>
           <Route path="/login" component={Login} />
           <Route path="/saveprofiles" component={Saveprofile} />

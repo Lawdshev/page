@@ -11,11 +11,14 @@ import { states } from "../utils/selectData";
 import Selsect from '../components/Selsect'
 import axios from "axios";
 import Cookies from "js-cookie";
+import { useModalContext } from '../context/modalContext';
 
 
 let accessToken = Cookies.get('access')
 
 function Personaldetails () {
+  const {handleShow} = useModalContext()
+
   const [next, setNext] = useState("");
   const [file, setFile] = useState('')
   const [title, setTitle] = useState('')
@@ -42,7 +45,6 @@ function Personaldetails () {
   //function to save personal details to the back end
   const handleSave = async (e) => {
          e.preventDefault()
-
          await axios.post('https://pagefinancials.com/webapp/customers/personal_detail.php', {
           title,
           surname,
@@ -65,8 +67,15 @@ function Personaldetails () {
           nextofkinrelationship,
           loanpurpose
          }, {headers : { "Authorization" :`Bearer ${accessToken}`}}).then(res => {
+          // check if access oken has not expired
+          if(!accessToken || accessToken === 'undefined') 
+              return handleShow('Login session expired please login to continue', false, '/login')
+          //  if access token hasn't expired checked the response status   
           if(res.status === 200) {
-            console.log('sucessfully updated personal details')
+            handleShow('sucessfully updated personal details', true, '/app/employerdetails')
+          }
+          {
+           return handleShow(`${res.data.message}`, false, 'app/personaldetails' )
           }
          })
   }

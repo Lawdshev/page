@@ -4,12 +4,13 @@ import './assets/css/tailwind.output.css'
 import App from './App'
 import { SidebarProvider } from './context/SidebarContext'
 import { SectorProvider } from './context/SectorContext'
-import { AcessTokenProvider } from './context/AcessTokenContext'
 import ThemedSuspense from './components/ThemedSuspense'
 import { Windmill } from '@windmill/react-ui'
 import * as serviceWorker from './serviceWorker'
 import { AuthProvider } from 'react-auth-kit'
 import { BrowserRouter } from 'react-router-dom'
+import {ModalContextProvider} from './context/modalContext'
+import { AuthContextProvider } from './context/auth'
 
 // if (process.env.NODE_ENV !== 'production') {
 //   const axe = require('react-axe')
@@ -17,28 +18,21 @@ import { BrowserRouter } from 'react-router-dom'
 // }
 
 ReactDOM.render(
+  <Suspense fallback={<ThemedSuspense />}>
+    <AuthContextProvider>
   <SidebarProvider>
-    <AcessTokenProvider>
     <SectorProvider>
-    <Suspense fallback={<ThemedSuspense />}>
-          <AuthProvider
-      authType={'cookie'}
-      authName={'access_token'}
-      cookieDomain={window.location.hostname}
-      cookieSecure={false}
-      >
-      <Windmill usePreferences>
-        <BrowserRouter>
-         <App />
-        </BrowserRouter>
-      </Windmill>
-       </AuthProvider>
-    </Suspense>
-
+      <ModalContextProvider>
+          <Windmill usePreferences>
+            <BrowserRouter>
+                <App />
+            </BrowserRouter>
+          </Windmill>
+       </ModalContextProvider>
     </SectorProvider>
-    </AcessTokenProvider>
-    
-  </SidebarProvider>,
+  </SidebarProvider>
+  </AuthContextProvider>
+   </Suspense>,
   document.getElementById('root')
 )
 

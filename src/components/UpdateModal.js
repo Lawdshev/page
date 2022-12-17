@@ -8,7 +8,7 @@ function UpdateModal({show, handleClose, type}) {
   return (
     <> 
      { show &&
-     
+
      <Backdrop > 
 
      <div className='w-full h-full relative f' onClick={handleClose} />
@@ -19,7 +19,7 @@ function UpdateModal({show, handleClose, type}) {
         <div className='w-full  flex flex-col mx-auto px-8'>
             <img src={Sad} alt="image" className='block mx-auto w-24 h-24 mb-6' />
 
-            <p className='mb-3 self-center' style={{color:"#464646"}}>Please Update Password to continue</p>
+            <p className='mb-3 self-center font-bold' style={{color:"#464646"}}>Please Update Password to continue</p>
             <br/>
         </div>
 

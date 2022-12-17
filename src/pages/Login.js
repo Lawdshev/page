@@ -2,17 +2,21 @@ import React, {useState} from 'react';
 import FAQDropDown from "../components/FAQDropDown";
 import FAQs from "../utils/FAQs";
 import Cookies from 'js-cookie';
-import axios from 'axios';
+import axios,{AxiosError} from 'axios';
 import { Link } from 'react-router-dom';
 import Logo from "../assets/img/logo.svg";
 import {loginValidation} from '../validation/loginValidation';
 import UpdateModal from '../components/UpdateModal';
+import { useModalContext } from '../context/modalContext';
+import { useAuthContext } from '../context/auth';
 
 function Login() {
   const [email,setEmail] = useState();
   const [password,setPassword] = useState();
   const [update, setUpdate] = useState(false);
   const [invalid, setInvalid] = useState(false);
+  const {handleShow} = useModalContext();
+  const {setUser} = useAuthContext()
 
   // error if not valid email 
   const [error, setError] = useState('')
@@ -33,28 +37,27 @@ function Login() {
     }
     let valid = await loginValidation(form)
     if (valid === false) {
-      setError('invalid login')
+      setError('All fields must be filled correctly')
       return
     }
     try {
-      axios.post('http://localhost:8080/https://pagefinancials.com/webapp/users/login.php',form).then(res=> {
-        if (res.data.message === "Update your Password") {
-          // this will open the modal with the message "upadate your profile"
-           setUpdate(true)
-      
-          //invalid login parameters
-          return
+      setError('')
+      await axios.post('http://localhost:8080/https://pagefinancials.com/webapp/users/login.php',form).then(res=> {
+
+        if (res.data.status === true) {
+          Cookies.set('auth', res.data.access_token)
+          setUser(true)
+          handleShow('login sucessful', true, 'continue', '/app/bvnverification')
         }
-        if (res.data.message === "No Record Found"||"Password mismatch" ) {
-           // show invalid user message   
-           setInvalid(true)
-            
-        } 
-        Cookies.set('access', res.data.access_token)
+      }).catch(error=> {
+        if(error.response.data.message === "No Record Found"){ return setInvalid(true)} 
+        else if(error.response.data.message === "Update your Password"){ return setUpdate(true)} 
+        else{ handleShow('Error: Please try again later',false,'Retry')}
       })
-    } catch (error) {
-      console.log(error)
-    }  
+       
+    }catch{
+      console.log('error')
+    }
   }
 
   return (
@@ -72,7 +75,7 @@ function Login() {
       <div>
         <label>Personal Email Address</label>
         <input
-          className="w-full md:h-16 h-10 mt-3 rounded px-4"
+          className="w-full md:h-16 h-10 mt-3 border border-bla rounded px-4"
           placeholder="Enter registered email address"
           type='email'
           value={email}
@@ -90,7 +93,7 @@ function Login() {
         />
       </div>
       { error !== '' &&
-        <span className='text-red-500 text-sm'>{error}</span> 
+        <span className='text-red-500 text-lg'>{error}</span> 
       }
       <button
         className="mx-auto block w-full py-4 mt-12 text-lg font-bold md:py-8 text-white rounded-lg bg-orange-500" onClick={handleContinue}
@@ -100,7 +103,7 @@ function Login() {
       </button>
     </div>
     <div className='text-center mt-2 underline text-orange-500'>
-    <Link to='/updateprofile'>Click here to update password</Link>
+    <Link to='/updateprofile'>Forgot password</Link>
     </div>
     <div
         className="w-full px-5 md:px-12 mx-auto py-3 md:py-10 bg-white"

@@ -18,7 +18,7 @@ function Modals({ handleClose, show, child, type="failed" }) {
         <div className='w-full mx-auto px-8'>
             <img src={Sad} alt="image" className='block mx-auto w-24 h-24 mb-6' />
 
-            <p className='mb-3' style={{color:"#464646"}}>Sorry we are unable to confirm your eligibility at this moment, your employer or salary, or age does not meet our minimum requirements at the moment</p>
+            <p className='mb-3 font-bold' style={{color:"#464646"}}>Sorry we are unable to confirm your eligibility at this moment, your employer or salary, or age does not meet our minimum requirements at the moment</p>
             <br/>
 
             <p  className='mb-8' style={{color:"#464646"}}>

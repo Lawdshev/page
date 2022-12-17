@@ -4,12 +4,17 @@ import { Location } from "react-router-dom";
 import Modals from '../../components/Modal'
 import Typeahed from '../../components/Typeahed'
 import {Request, requestAuth} from '../../components/axios'
-import { useSignIn } from 'react-auth-kit'
+// import { useSignIn } from 'react-auth-kit'
 import axios, { AxiosError } from 'axios'
 import Selsect from '../../components/Selsect';
 import {privateSecValidation} from '../../validation/privateSectionValidation'
+import { useModalContext } from '../../context/modalContext';
+import Cookies from 'js-cookie'
 
 function Privatesection() {
+    const {handleShow} = useModalContext()
+    const [error, setError] = useState('');
+
     const [success, setSuccess] = useState(false)
     const [fail, setFail] = useState(false)
     const [email, setEmail] = useState('')
@@ -20,9 +25,8 @@ function Privatesection() {
     const [education, setEducation] = useState('')
     const [income, setIncome] = useState('')
     const [employername, setEmployername] = useState('')
-    const [error, setError] = useState('');
     const [password, setPassword] = useState('')
-    const signIn = useSignIn()
+    // const signIn = useSignIn()
 
     const handleContinue = (e) => {
     //setSuccess(false)
@@ -46,53 +50,45 @@ function Privatesection() {
             employername:employername
             }
         let valid = await privateSecValidation(form)
-        console.log(valid)
-        if (valid === false) {
+        if (valid === false) { 
+           setError('All field must be filled correctly')
             return
         } 
         try 
         {
+            setError('')
         //   check eligibility with form data  
-          axios.post('https://pagefinancials.com/webapp/eligibility/customer_rating.php', form).then(res => {
+          axios.post('http://localhost:8080/https://pagefinancials.com/webapp/eligibility/customer_rating.php', form).then(res => {
+            
                     //  checking if eligibility is true
                     if (res.data.message === "Eligible") {
-
-                        // this to open the modal showing you are eligible for the loan
                         setSuccess(true);
                         setFail(false);
 
                     // then creation of user with the eligible email    
-                    axios.post("https://pagefinancials.com/webapp/users/create.php",{email}).then(res => {
-                        if (res.data.status === true || res.data.message === "Customer was created."){
-                        
-                        // send the default password to the user to enable the user to update profile    
-                        console.log(res.data.default_password)
+                    axios.post("http://localhost:8080/https://pagefinancials.com/webapp/users/create.php",{email}).then(res => {
+                        if (res.data.status === true ){
+                            // send the default password to the user to enable the user to update profile 
+                            Cookies.set('access', res.data.access_token)
+                            handleShow(`DEFAULT PASSWORD: ${res.data.default_password}`,true,'continue','/app/bvnverification')
+                            console.log(res.data.default_password)
                         }
                         {
-                        //  this would send the message if the user isn't created    
-                        console.log(res.data.message)
+                        //  this would send the message if the user isn't created   
+                          handleShow(`${res.data.message}`, false,'Retry','/app/eligibility')
+                          console.log(res.data.message)
                         }
-                        })
-                   } 
-                        //  check if user is not eligible
-                        if(!res.data.status ||  res.data.message === "Not Eligibile" ){
+                        }).catch(error=> console.log(error))
+                    } 
 
-                            // set modal with message ineligible
-                            setSuccess(false)
-                            setFail(true) 
-                            return
-                        }
                 }).catch(error=>{
                             if(error && error instanceof AxiosError && error.response.data.message ===  "Not Eligibile" )
-                            setSuccess(false)
-                            setFail(true)
                             if(error && error instanceof Error)
-                            console.log(error.message);
+                            handleShow(`${error.response.data.message}`, false,'Close','/')
+                           
                 })
             }
-            catch (error) {
-                console.log(error)
-                }   
+            catch (error) {console.log(error)}   
     }
     
     
@@ -215,8 +211,10 @@ function Privatesection() {
                     placeholder='Enter your email address'
                      onChange={(e) =>  setEmail(e.target.value)} />
                 </div>
-
             </div>
+            { error !== '' &&
+              <span className='text-red-500 text-lg'>{error}</span> 
+           }
             <button type='submit' className="mx-auto block w-full py-4 mt-12 text-lg font-bold md:py-8 text-white rounded-lg bg-orange-500" onClick={handleSubmit}>
           {" "}
           Continue{" "}

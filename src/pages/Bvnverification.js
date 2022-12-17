@@ -1,16 +1,15 @@
 import React, { useState, useContext } from "react";
 import { SectorContext } from "../context/SectorContext";
 import BvnModal from "../components/BvnModal"
-import Arrowdown from "../assets/img/arrowdown.svg";
-import CheckedIcon from "../assets/img/checked.svg";
-import UncheckedIcon from "../assets/img/unchecked.svg";
-import { Request, requestAuth } from "../components/axios";
 import axios from "axios";
 import Cookies from "js-cookie";
+import { useModalContext } from '../context/modalContext';
 
 let accessToken = Cookies.get('access')
 
 function Bvnverification() {
+  const {handleShow} = useModalContext()
+
   const { selSector, toggleSector, government } = useContext(SectorContext)
   const [checkbox1, setCheckbox1] = useState(false);
   const [checkbox2, setCheckbox2] = useState(false);
@@ -32,16 +31,20 @@ function Bvnverification() {
     if(bvn === ''){
     return setEmpty('Bvn can not be empty')
     }
+    
     if (!checkbox1 || !checkbox2) {
       //accept terms and condition
       setNoCheck('Privacy,Terms and Conditions must be accepted')
       return
     }
+
     axios.post('https://pagefinancials.com/webapp/verification/bvn_verify.php',{number:bvn},{ headers: {"Authorization" :`Bearer ${accessToken}`}}).then(res=>{
+      if (!accessToken || accessToken === 'undefined')
+            return handleShow('Login session expired please login to continue', false, '/login')
       if (res.status === 200) {
-        setNext(true)
+          setNext(true)
       }{
-        console.log(res.data.message)
+        handleShow(`${res.data.message}`, false, '/bvnverificaion' )
       }
     })
  }
@@ -52,15 +55,15 @@ function Bvnverification() {
     return setEmpty('Field can not be empty')
     }
     await axios.post("https://pagefinancials.com/webapp/verification/verify_otp.php",{otp},{ headers: {"Authorization" :`Bearer ${accessToken}`}}).then(res => {
+        if (!accessToken || accessToken === 'undefined')
+               return handleShow('Login session expired please login to continue', false, '/login')
         if(res.data.status === true ){
-          console.log('otp has been verified sucessfully')
-          window.location.replace("/app/personaldetails")
+              //navigate to personal details page 
+              handleShow(`${res.data.message}`, true, '/app/personaldetails')
         } {
-          console.log(res.data.message)
+          handleShow(`${res.data.message}`, false, '/bvnverification#otp')
         }
-    })
-    //navigate to personal details page 
-      
+    })     
     }
 
   return (

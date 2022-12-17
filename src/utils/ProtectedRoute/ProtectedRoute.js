@@ -1,23 +1,19 @@
+import Cookies from "js-cookie";
 import React, { useEffect } from "react";
-import { AcessTokenContext } from "../../context/AcessTokenContext";
-import Cookies from 'js-cookie';
+import { useAuthContext } from "../../context/auth";
+import { useModalContext } from "../../context/modalContext";
 
 const ProtectedRoute = ({children}) => {
-   const {acessToken, loggedIn, setLoggedIn} = AcessTokenContext();
+   const {user} = useAuthContext();
+   const {handleShow} = useModalContext()
+   
+   useEffect(() => {
+      if (user === false){
+         handleShow('Please Login/Register to continue', false, 'Eligibility', '/app/eligibility')
+         return
+      }
+   }, [user]);
 
-     const checkUserToken = () => {
-        if(!acessToken || acessToken === 'undefined') {
-           setLoggedIn(false)
-           window.location.replace('/login')
-        } {
-           setLoggedIn(true)
-           return children
-        }
-     }
-
-     useEffect(() => {
-        checkUserToken()
-     }, [loggedIn])
+   return children
 }
-
 export default ProtectedRoute;

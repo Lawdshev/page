@@ -2,9 +2,9 @@ import React, { useState } from "react";
 import FAQDropDown from "../components/FAQDropDown";
 import Cookies from 'js-cookie';
 import axios from 'axios';
-import { Link } from 'react-router-dom';
 import Logo from "../assets/img/logo.svg";
 import LoginModals from "../components/LoginModal";
+import { updateProfileValidation } from "../validation/updateProfileValidation";
 
 
 
@@ -23,38 +23,48 @@ function UpdateProfile() {
     // function to navigate to login page once account has been updated sucessfully
    const loginPage = () => {
     window.location.replace('/login')
- }
+  }
 
  //function to close modal if update is not sucessful
- const handleClose = () => {
-    setFail(false)
- }
+    const handleClose = () => {
+        setFail(false)
+    }
 
 
 
     const handleContinue = () => {
+      let form ={
+        email:email, 
+        old_password:old_password,
+        new_password:new_password,
+        confirm_password:confirm_password
+      }
+      let valid = updateProfileValidation(form)
+      if(valid === false || new_password !== confirm_password){
+        //modal here
+        return
+      }
       try {
-        axios.post('https://pagefinancials.com/webapp/users/update.php', {
-            email, 
-            old_password,
-            new_password,
-            confirm_password
-         }).then(res => {
-            if(res.data.status === true || res.data.message === "Customer Account was updated." ){
+        axios.post('http://localhost:8080/https://pagefinancials.com/webapp/users/update.php',form).then(res => {
+            if(res.data.status === true ){
               // set a message saying you can login now
               setSuccessful(true)
-              console.log('please login to continue')
-            } {
-              // send the message 
-              setFail(true)
-              console.log(res.data.message)
+              //console.log('please login to continue')
+              setTimeout(() => {
+                window.location.replace('/login')
+              }, 3000); 
             }
-         })
-        
+         }).catch(error=> {
+          if(error.response.data.message === "Unable to update Customer, email,old_password,new_password,confirm_password Field is Empty.")
+            { return setFail(true)} 
+          else{
+            //old password incorrect
+            setFail(true)
+          }
+        })
       } catch (error) {
            console.log(error)
       }
-
     }
 
     
